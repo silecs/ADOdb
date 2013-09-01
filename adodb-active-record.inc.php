@@ -84,7 +84,7 @@ class ADODB_Active_Record {
 	var $_saved = false; // indicates whether data is already inserted.
 	var $_lasterr = false; // last error message
 	var $_original = false; // the original values loaded or inserted, refreshed on update
-
+	
 	var $foreignName; // CFR: class name when in a relationship
 
 	static function UseDefaultValues($bool=null)
@@ -129,7 +129,7 @@ class ADODB_Active_Record {
 			end($_ADODB_ACTIVE_DBS);
 			$this->_dbat = key($_ADODB_ACTIVE_DBS);
 		}
-
+		
 		$this->_table = $table;
 		$this->_tableat = $table; # reserved for setting the assoc value to a non-table name, eg. the sql string in future
 
@@ -203,7 +203,7 @@ class ADODB_Active_Record {
 		$table->_hasMany[$foreignRef] = $ar;
 	#	$this->$foreignRef = $this->_hasMany[$foreignRef]; // WATCHME Removed assignment by ref. to please __get()
 	}
-	
+
 	// use when you don't want ADOdb to auto-pluralize tablename
 	static function TableHasMany($table, $foreignRef, $foreignKey = false, $foreignClass = 'ADODB_Active_Record')
 	{
@@ -243,7 +243,7 @@ class ADODB_Active_Record {
 		$table->_belongsTo[$foreignRef] = $ar;
 	#	$this->$foreignRef = $this->_belongsTo[$foreignRef];
 	}
-	
+
 	static function ClassBelongsTo($class, $foreignRef, $foreignKey=false, $parentKey='', $parentClass = 'ADODB_Active_Record')
 	{
 		$ar = new $class();
@@ -586,7 +586,7 @@ class ADODB_Active_Record {
             # </AP>
 		}
         else
-			$keys = array_keys($row);
+		$keys = array_keys($row);
 			
         # <AP>
         reset($keys);
@@ -624,7 +624,7 @@ class ADODB_Active_Record {
 		case 'D':
 		case 'T':
 			if (empty($val)) return 'null';
-		
+			
 		case 'B':
 		case 'N':
 		case 'C':

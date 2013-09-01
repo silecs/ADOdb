@@ -276,10 +276,10 @@ processes 69293
 					$FAIL = true;
 					return false;
 				}
-		
+			
 				$info[0] = -1;
-				$info[1] = 0;
-				$info[2] = 0;
+			$info[1] = 0;
+			$info[2] = 0;
 				$info[3] = 0;
 				foreach($objWMIService->ExecQuery($myQuery) as $objItem)  {
 						$info[0] = $objItem->PercentProcessorTime();
@@ -353,26 +353,26 @@ Committed_AS:   348732 kB
 	{
 		$info = $this->_CPULoad();
 		if (!$info) return false;
-		
+			
 		if (strncmp(PHP_OS,'WIN',3)==0) {
 			return (integer) $info[0];
 		}else {
-			if (empty($this->_lastLoad)) {
-				sleep(1);
-				$this->_lastLoad = $info;
-				$info = $this->_CPULoad();
-			}
-			
-			$last = $this->_lastLoad;
+		if (empty($this->_lastLoad)) {
+			sleep(1);
 			$this->_lastLoad = $info;
-			
-			$d_user = $info[0] - $last[0];
-			$d_nice = $info[1] - $last[1];
-			$d_system = $info[2] - $last[2];
-			$d_idle = $info[3] - $last[3];
-			
-			//printf("Delta - User: %f  Nice: %f  System: %f  Idle: %f<br>",$d_user,$d_nice,$d_system,$d_idle);
+			$info = $this->_CPULoad();
+		}
 		
+		$last = $this->_lastLoad;
+		$this->_lastLoad = $info;
+		
+		$d_user = $info[0] - $last[0];
+		$d_nice = $info[1] - $last[1];
+		$d_system = $info[2] - $last[2];
+		$d_idle = $info[3] - $last[3];
+		
+		//printf("Delta - User: %f  Nice: %f  System: %f  Idle: %f<br>",$d_user,$d_nice,$d_system,$d_idle);
+
 			$total=$d_user+$d_nice+$d_system+$d_idle;
 			if ($total<1) $total=1;
 			return 100*($d_user+$d_nice+$d_system)/$total; 

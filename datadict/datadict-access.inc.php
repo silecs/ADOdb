@@ -30,7 +30,7 @@ class ADODB2_access extends ADODB_DataDict {
 		case 'X2': return 'MEMO';
 		
 		case 'B': return 'BINARY';
-		
+			
 		case 'TS':
 		case 'D': return 'DATETIME';
 		case 'T': return 'DATETIME';

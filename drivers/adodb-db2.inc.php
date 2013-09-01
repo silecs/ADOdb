@@ -24,9 +24,6 @@ if (!defined('ADODB_DIR')) die();
 --------------------------------------------------------------------------------------*/
 
 
-
-
-
 class ADODB_db2 extends ADOConnection {
 	var $databaseType = "db2";	
 	var $fmtDate = "'Y-m-d'";
@@ -36,7 +33,10 @@ class ADODB_db2 extends ADOConnection {
 	var $sysDate = 'CURRENT DATE';
 	var $sysTimeStamp = 'CURRENT TIMESTAMP';
 	
-	var $fmtTimeStamp = "'Y-m-d H:i:s'";
+        // See #8386 for more details
+	// original: var $fmtTimeStamp = "'Y-m-d-H:i:s'";
+	// DB2 valid formats: Y-m-d-H.i.s (IBM SQL format, center dash and dots) or Y-m-d H:i:s (ISO format, center space and colons). Since i5/OS v5r3 supports only IBM SQL format, we'll use it: Y-m-d-H.i.s  
+	var $fmtTimeStamp = "'Y-m-d-H.i.s'";
 	var $replaceQuote = "''"; // string to use to replace quotes
 	var $dataProvider = "db2";
 	var $hasAffectedRows = true;
@@ -58,7 +58,9 @@ class ADODB_db2 extends ADOConnection {
 	
     function _insertid()
     {
-        return ADOConnection::GetOne('VALUES IDENTITY_VAL_LOCAL()');
+        // See #8385 for more details.
+        // original: return ADOConnection::GetOne('VALUES IDENTITY_VAL_LOCAL()');
+        return ADOConnection::GetOne('SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1');
     }
 	
 	function ADODB_db2() 
@@ -138,7 +140,10 @@ class ADODB_db2 extends ADOConnection {
 	{
 		if (empty($ts) && $ts !== 0) return 'null';
 		if (is_string($ts)) $ts = ADORecordSet::UnixTimeStamp($ts);
-		return 'TO_DATE('.adodb_date($this->fmtTimeStamp,$ts).",'YYYY-MM-DD HH24:MI:SS')";
+
+                // See #8387 for more details
+                // original: return 'TO_DATE('.adodb_date($this->fmtTimeStamp,$ts).",'YYYY-MM-DD HH24:MI:SS')";
+		return adodb_date($this->fmtTimeStamp,$ts);
 	}
 	
 	// Format date column in sql string given an input format that understands Y M D
@@ -236,7 +241,7 @@ class ADODB_db2 extends ADOConnection {
 			return ADOConnection::ServerInfo();
 		}
 	}
-	
+
 	function CreateSequence($seqname='adodbseq',$start=1)
 	{
 		if (empty($this->_genSeqSQL)) return false;
@@ -280,9 +285,9 @@ class ADODB_db2 extends ADOConnection {
 	{	
 		// if you have to modify the parameter below, your database is overloaded,
 		// or you need to implement generation of id's yourself!
-				$num = $this->GetOne("VALUES NEXTVAL FOR $seq");
+		$num = $this->GetOne("VALUES NEXTVAL FOR $seq");
 				return $num;
-	}
+			}
 
 
 	function ErrorMsg()
@@ -421,13 +426,18 @@ class ADODB_db2 extends ADOConnection {
 	}
 	
 	
-	function MetaTables($ttype=false,$schema=false)
+        // See #8384 for more details
+        // @@@ original: function MetaTables($ttype=false,$schema=false)
+        // DB2/400 Allow table and schema as optional parameters. 
+	function MetaTables($ttype=false,$showSchema=false, $qtable="%", $qschema="%")
 	{
 	global $ADODB_FETCH_MODE;
 	
 		$savem = $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
-		$qid = db2_tables($this->_connectionID);
+
+                // @@@ original: $qid = db2_tables($this->_connectionID);
+		$qid = db2_tables($this->_connectionID, null, $qschema, $qtable);		
 		
 		$rs = new ADORecordSet_db2($qid);
 		
@@ -447,13 +457,14 @@ class ADODB_db2 extends ADOConnection {
 		for ($i=0; $i < sizeof($arr); $i++) {
 			if (!$arr[$i][2]) continue;
 			$type = $arr[$i][3];
-			$owner = $arr[$i][1];
-			$schemaval = ($schema) ? $arr[$i][1].'.' : '';
+                        // @@@ original: DB2/400 $schemaval = ($schema) ? $arr[$i][1].'.' : '';
+                        // use $showSchema instead of $schema, for consistency with odbc_db2.inc.php
+			$schemaval = ($showSchema) ? $arr[$i][1].'.' : '';
 			if ($ttype) { 
 				if ($isview) {
 					if (strncmp($type,'V',1) === 0) $arr2[] = $schemaval.$arr[$i][2];
-				} else if (strncmp($owner,'SYS',3) !== 0) $arr2[] = $schemaval.$arr[$i][2];
-			} else if (strncmp($owner,'SYS',3) !== 0) $arr2[] = $schemaval.$arr[$i][2];
+				} else if (strncmp($type,'SYS',3) !== 0) $arr2[] = $schemaval.$arr[$i][2];
+			} else if (strncmp($type,'SYS',3) !== 0) $arr2[] = $schemaval.$arr[$i][2];
 		}
 		return $arr2;
 	}

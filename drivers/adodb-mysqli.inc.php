@@ -50,7 +50,7 @@ class ADODB_mysqli extends ADOConnection {
 	var $_bindInputArray = false;
 	var $nameQuote = '`';		/// string to use to quote identifiers and names
 	var $optionFlags = array(array(MYSQLI_READ_DEFAULT_GROUP,0));
-  	var $arrayClass = 'ADORecordSet_array_mysqli';
+  var $arrayClass = 'ADORecordSet_array_mysqli';
   	var $multiQuery = false;
 	
 	function ADODB_mysqli() 
@@ -309,7 +309,7 @@ class ADODB_mysqli extends ADOConnection {
 	}
 
 	  
-	function MetaIndexes ($table, $primary = FALSE)
+	function MetaIndexes ($table, $primary = FALSE, $owner=false)
 	{
 		// save old fetch mode
 		global $ADODB_FETCH_MODE;
@@ -512,9 +512,9 @@ class ADODB_mysqli extends ADOConnection {
 	
 	        // see https://sourceforge.net/tracker/index.php?func=detail&aid=2287278&group_id=42718&atid=433976
 			if (!isset($foreign_keys[$ref_table])) {
-				$foreign_keys[$ref_table] = array();
+	        $foreign_keys[$ref_table] = array();
 			}
-	        $num_fields = count($my_field);
+	        $num_fields               = count($my_field);
 	        for ( $j = 0;  $j < $num_fields;  $j ++ ) {
 	            if ( $associative ) {
 	                $foreign_keys[$ref_table][$ref_field[$j]] = $my_field[$j];
@@ -656,7 +656,7 @@ class ADODB_mysqli extends ADOConnection {
 		// return value of the stored proc (ie the number of rows affected).
 		// Commented out for reasons of performance. You should retrieve every recordset yourself.
 		//	if (!mysqli_next_result($this->connection->_connectionID))	return false;
-	
+		
 		if (is_array($sql)) {
 		
 			// Prepare() not supported because mysqli_stmt_execute does not return a recordset, but
@@ -672,6 +672,7 @@ class ADODB_mysqli extends ADOConnection {
 			
 			$fnarr = array_merge( array($stmt,$a) , $inputarr);
 			$ret = call_user_func_array('mysqli_stmt_bind_param',$fnarr);
+
 			$ret = mysqli_stmt_execute($stmt);
 			return $ret;
 		}
@@ -688,8 +689,8 @@ class ADODB_mysqli extends ADOConnection {
 		if ($this->multiQuery) {
 			$rs = mysqli_multi_query($this->_connectionID, $sql.';');
 			if ($rs) {
-				$rs = ($ADODB_COUNTRECS) ? @mysqli_store_result( $this->_connectionID ) : @mysqli_use_result( $this->_connectionID );
-				return $rs ? $rs : true; // mysqli_more_results( $this->_connectionID )
+			$rs = ($ADODB_COUNTRECS) ? @mysqli_store_result( $this->_connectionID ) : @mysqli_use_result( $this->_connectionID );
+			return $rs ? $rs : true; // mysqli_more_results( $this->_connectionID )
 			}
 		} else {
 			$rs = mysqli_query($this->_connectionID, $sql, $ADODB_COUNTRECS ? MYSQLI_STORE_RESULT : MYSQLI_USE_RESULT);
@@ -697,10 +698,10 @@ class ADODB_mysqli extends ADOConnection {
 			if ($rs) return $rs;
 		}
 
-		if($this->debug)
+			if($this->debug)
 			ADOConnection::outp("Query: " . $sql . " failed. " . $this->ErrorMsg());
 		
-		return false;
+			return false;
 		
 	}
 
@@ -1109,6 +1110,7 @@ class ADORecordSet_array_mysqli extends ADORecordSet_array {
     $this->ADORecordSet_array($id,$mode);
   }
   
+
 	function MetaType($t, $len = -1, $fieldobj = false)
 	{
 		if (is_object($t)) {

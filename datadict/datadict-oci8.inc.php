@@ -82,7 +82,7 @@ class ADODB2_oci8 extends ADODB_DataDict {
 		case 'X2': return 'NVARCHAR2(4000)';
 		
 		case 'B': return 'BLOB';
-		
+			
 		case 'TS':
 				return 'TIMESTAMP';
 				

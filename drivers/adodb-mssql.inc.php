@@ -14,7 +14,6 @@ Set tabs to 4 for best viewing.
 	
 */
 
-
 // security - hide paths
 if (!defined('ADODB_DIR')) die();
 
@@ -157,7 +156,7 @@ class ADODB_mssql extends ADOConnection {
             return $this->lastInsID; // InsID from sp_executesql call
         } else {
 			return $this->GetOne($this->identitySQL);
-		}
+	}
 	}
 
 
@@ -250,7 +249,7 @@ class ADODB_mssql extends ADOConnection {
 			if ($secs2cache)
 				$rs = $this->CacheExecute($secs2cache, $sql, $inputarr);
 			else
-				$rs = $this->Execute($sql,$inputarr);
+			$rs = $this->Execute($sql,$inputarr);
 		} else
 			$rs = ADOConnection::SelectLimit($sql,$nrows,$offset,$inputarr,$secs2cache);
 	

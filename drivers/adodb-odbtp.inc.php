@@ -77,7 +77,7 @@ class ADODB_odbtp extends ADOConnection{
 		return "convert(datetime, $d, 120)"; 
 	}
 */
-	
+
 	function _insertid()
 	{
 	// SCOPE_IDENTITY()

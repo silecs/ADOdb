@@ -615,14 +615,14 @@ NATSOFT.DOMAIN =
 			
 			 // Let Oracle return the name of the columns
 			$q_fields = "SELECT * FROM (".$sql.") WHERE NULL = NULL";
-		
+			 
 			$false = false;
 			if (! $stmt_arr = $this->Prepare($q_fields)) {
 				return $false;
 			}
 			$stmt = $stmt_arr[1];
 			 
-			if (is_array($inputarr)) {
+			 if (is_array($inputarr)) {
 			 	foreach($inputarr as $k => $v) {
 					if (is_array($v)) {
 						if (sizeof($v) == 2) // suggested by g.giunta@libero.
@@ -1297,9 +1297,9 @@ SELECT /*+ RULE */ distinct b.column_name
 		
 		// undo magic quotes for " unless sybase is on
 		if (!ini_get('magic_quotes_sybase')) {
-			$s = str_replace('\\"','"',$s);
-			$s = str_replace('\\\\','\\',$s);
-			return "'".str_replace("\\'",$this->replaceQuote,$s)."'";
+		$s = str_replace('\\"','"',$s);
+		$s = str_replace('\\\\','\\',$s);
+		return "'".str_replace("\\'",$this->replaceQuote,$s)."'";
 		} else {
 			return "'".$s."'";
 		}

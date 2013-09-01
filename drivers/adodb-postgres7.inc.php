@@ -105,7 +105,7 @@ class ADODB_postgres7 extends ADODB_postgres64 {
 	  return $a;
 	
 	}
-	
+
 	// from  Edward Jaramilla, improved version - works on pg 7.4
 	function _old_MetaForeignKeys($table, $owner=false, $upper=false)
 	{

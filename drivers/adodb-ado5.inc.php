@@ -427,7 +427,7 @@ class ADORecordSet_ado extends ADORecordSet {
 		$rs = $this->_queryID;
 		
 		try {
-			$this->_numOfRows = $rs->RecordCount;
+		$this->_numOfRows = $rs->RecordCount;
 		} catch (Exception $e) {
 			$this->_numOfRows = -1;
 		}

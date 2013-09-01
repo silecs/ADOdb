@@ -133,6 +133,7 @@ class ADODB_mysql extends ADOConnection {
 	function qstr($s,$magic_quotes=false)
 	{
 		if (is_null($s)) return 'NULL';
+
 		if (!$magic_quotes) {
 		
 			if (ADODB_PHPVER >= 0x4300) {
@@ -579,10 +580,10 @@ class ADODB_mysql extends ADOConnection {
 
 			// see https://sourceforge.net/tracker/index.php?func=detail&aid=2287278&group_id=42718&atid=433976
 			if (!isset($foreign_keys[$ref_table])) {
-				$foreign_keys[$ref_table] = array();
+             $foreign_keys[$ref_table] = array();
 			}
-            $num_fields = count($my_field);
-            for ( $j = 0;  $j < $num_fields;  $j ++ ) {
+             $num_fields = count($my_field);
+             for ( $j = 0;  $j < $num_fields;  $j ++ ) {
                  if ( $associative ) {
                      $foreign_keys[$ref_table][$ref_field[$j]] = $my_field[$j];
                  } else {
